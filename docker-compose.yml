@@ -26,7 +26,7 @@ services:
       dockerfile: Dockerfile
     container_name: nextjs-frontend
     ports:
-      - "80:3000"
+      - "5000:3000"
     environment:
       # ฝั่ง Server Next.js ยิงหา Backend ผ่านชื่อ Service
       - API_URL_INTERNAL=http://backend:3000 
