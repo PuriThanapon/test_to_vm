@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # ----------------------------
+  # 1. Backend (NestJS)
+  # ----------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nestjs-backend
+    ports:
+      - "3001:3000" # Map ออกมาที่ 3001
+    environment:
+      # ลบค่า Config ของ Database ออกไปก่อน
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  # ----------------------------
+  # 2. Frontend (Next.js)
+  # ----------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nextjs-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      # ฝั่ง Server Next.js ยิงหา Backend ผ่านชื่อ Service
+      - API_URL_INTERNAL=http://backend:3000 
+      # ฝั่ง Browser ยิงหา Backend ผ่าน localhost
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
