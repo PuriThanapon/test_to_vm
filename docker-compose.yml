@@ -48,6 +48,8 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=2d    # <--- เพิ่มบรรทัดนี้ (เก็บข้อมูลแค่ 2 วันพอ)
+      - --storage.tsdb.retention.size=512MB # <--- เพิ่มบรรทัดนี้ (เก็บข้อมูลไม่เกิน 512MB)
     networks:
       - app-network # ให้อยู่ใน Network เดียวกับ Frontend/Backend เพื่อ Scrape ข้อมูล
     restart: unless-stopped
