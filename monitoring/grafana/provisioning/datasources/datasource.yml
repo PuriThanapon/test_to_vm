@@ -1,0 +1,10 @@
+
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    url: http://prometheus:9090  # ใช้ชื่อ Service ภายใน Docker Network
+    isDefault: true              # ตั้งเป็น Default เพื่อให้ Dashboard ใช้งานได้ง่าย
+    access: proxy
+    editable: true
+    version: 1

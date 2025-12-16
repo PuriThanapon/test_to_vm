@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: 'Default'    # <--- ต้องเติมขีด (-) และเว้นวรรค 1 ที
+    orgId: 1
+    folder: ''
+    type: file
+    updateIntervalSeconds: 10
+    # allowUiUpdates: true คือการอนุญาตให้ผู้ใช้แก้ไข Dashboard ผ่าน UI ได้ , false คือไม่อนุญาต 
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/json_files # ชี้ไปที่โฟลเดอร์เก็บ JSON

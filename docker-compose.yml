@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # ----------------------------
@@ -30,13 +30,61 @@ services:
     environment:
       # ฝั่ง Server Next.js ยิงหา Backend ผ่านชื่อ Service
       - API_URL_INTERNAL=http://backend:3000 
+      # - NEXT_PUBLIC_API_URL=http://202.139.212.142:3001
       # ฝั่ง Browser ยิงหา Backend ผ่าน localhost
-      - NEXT_PUBLIC_API_URL=http://202.139.212.142:3001
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
     depends_on:
       - backend
     networks:
       - app-network
+  
+  # 3. Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    networks:
+      - app-network # ให้อยู่ใน Network เดียวกับ Frontend/Backend เพื่อ Scrape ข้อมูล
+    restart: unless-stopped
 
+  # 4. Node Exporter
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: host-node-exporter
+    # มอนิเตอร์ Host OS
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # 5. Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "9090:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      # 1. Mount datasource.yml
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      # 2. Mount dashboards.yml
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      # 3. Mount โฟลเดอร์ที่มีไฟล์ JSON Dashboard
+      - ./monitoring/grafana/provisioning/dashboards/json_files:/etc/grafana/provisioning/dashboards/json_files 
+    depends_on:
+      - prometheus
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  
 networks:
   app-network:
     driver: bridge

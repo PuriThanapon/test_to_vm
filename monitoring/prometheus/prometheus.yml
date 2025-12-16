@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s 
+  evaluation_interval: 15s 
+
+scrape_configs:
+  # 1. มอนิเตอร์ Backend API
+  - job_name: 'backend-api'
+    static_configs:
+      - targets: ['backend:3000'] # ใช้ชื่อ Service
+        # หาก metrics path ไม่ใช่ /metrics ต้องระบุ metrics_path: '/your-custom-path'
+
+  # 2. มอนิเตอร์ Prometheus เอง
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  # 3. มอนิเตอร์ Host OS ผ่าน Node Exporter
+  - job_name: 'host_os_node_exporter'
+    static_configs:
+      - targets: ['host-node-exporter:9100']
+      # สำหรับ Linux อาจใช้ IP Host หรือ Gateway
