@@ -30,9 +30,9 @@ services:
     environment:
       # ฝั่ง Server Next.js ยิงหา Backend ผ่านชื่อ Service
       - API_URL_INTERNAL=http://backend:3000 
-      # - NEXT_PUBLIC_API_URL=http://202.139.212.142:3001
+      - NEXT_PUBLIC_API_URL=http://202.139.212.142:3001
       # ฝั่ง Browser ยิงหา Backend ผ่าน localhost
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      # - NEXT_PUBLIC_API_URL=http://localhost:3001
     depends_on:
       - backend
     networks:
@@ -84,7 +84,7 @@ services:
 volumes:
   prometheus_data: {}
   grafana_data: {}
-  
+
 networks:
   app-network:
     driver: bridge
